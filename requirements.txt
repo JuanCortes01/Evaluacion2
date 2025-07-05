@@ -7,3 +7,6 @@ gunicorn
 python-decouple
 dj-database-url
 xhtml2pdf
+whitenoise
+cloudinary
+django-cloudinary-storage

@@ -9,15 +9,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 TEMPLATES_DIR = os.path.join(BASE_DIR, 'templates') 
 STATIC_DIR = os.path.join(BASE_DIR, 'static')
 
-# SECURITY WARNING: keep the secret key used in production secret!
+# SECURITY WARNING: keep the secret key used in production!
 SECRET_KEY = config("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config("DEBUG", default=False, cast=bool)
 
-ALLOWED_HOSTS = ['*']  # Puedes cambiar esto por tu dominio Render
+ALLOWED_HOSTS = ['*']  # Cambia esto por tu dominio Render si lo tienes
 
-# creamos las rutas para los redireccionamientos de iniciar y cerrar sesión
+# Redirecciones de login/logout
 LOGIN_REDIRECT_URL = "/principal/"
 LOGOUT_REDIRECT_URL = "/accounts/login"
 
@@ -39,6 +39,7 @@ CRISPY_TEMPLATE_PACK = 'bootstrap5'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # ← importante para static files
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -67,9 +68,9 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'eva2BackEnd.wsgi.application'
 
-# Database (auto-configurable para Render PostgreSQL o local SQLite fallback)
+# DATABASES
 DATABASES = {
-    'default': dj_database_url.config(default='sqlite:///db.sqlite3')
+    'default': dj_database_url.config(default=config('DATABASE_URL'))
 }
 
 # Password validation
@@ -94,14 +95,15 @@ TIME_ZONE = 'America/Santiago'
 USE_I18N = True
 USE_TZ = True
 
-# Static files (CSS, JavaScript, Images)
+# Static files
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [STATIC_DIR]
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # necesario para Render
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
+# Media files
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
